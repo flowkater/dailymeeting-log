@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,11 +45,11 @@ export default function LoginPage() {
           className="flex justify-center items-center w-full max-w-[426px] h-[42px] bg-[#1E2024] rounded-lg shadow-md hover:bg-gray-800 transition-colors"
         >
           <div className="flex flex-row justify-center items-center gap-1.5">
-            <img 
+            <Image 
               src="/images/google-logo.svg" 
               alt="Google 로고" 
-              width="18" 
-              height="18" 
+              width={18} 
+              height={18} 
             />
             <span className="text-white text-[15px] font-medium">회사 계정으로 로그인하기</span>
           </div>
@@ -58,15 +59,25 @@ export default function LoginPage() {
       {/* 오른쪽 패널 */}
       <div className="relative w-full md:w-1/2 h-40 md:h-full bg-[#111111] md:shadow-xl md:rounded-l-[48px] overflow-hidden order-1 md:order-2">
         <div className="absolute inset-0 bg-[#297FFF]">
-          {/* 배경 이미지로 추후 실제 이미지 파일을 사용하세요 */}
-          <div className="w-full h-full bg-[#297FFF]"></div>
+          {/* 배경 이미지 적용 */}
+          <div className="w-full h-full relative">
+            <Image 
+              src="/images/login-image.png"
+              alt="로그인 배경 이미지" 
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
         </div>
         <div className="absolute inset-0 bg-gradient-to-br from-[#297FFF] to-[#1A0082] opacity-70 mix-blend-normal"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] md:w-[290px] md:h-[290px] flex justify-center items-center">
-          <img 
+          <Image 
             src="/images/rnd-logo.svg" 
             alt="우당탕탕 R&D 로고" 
             className="w-full h-full object-contain drop-shadow-lg"
+            width={290}
+            height={290}
           />
         </div>
       </div>
