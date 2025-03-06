@@ -1,4 +1,4 @@
-import { Comment } from "@/app/domain/entities/Comment";
+import { Comment } from "@/core/domain/entities/Comment";
 
 export interface CommentViewModel {
   id: string;

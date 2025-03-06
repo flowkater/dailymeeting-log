@@ -1,16 +1,17 @@
 "use client";
 import "reflect-metadata";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { usePostStore } from "./store/store";
-import { PostApplication } from "./application/PostApplication";
-import { container } from "./infrastructure/di/container";
-import { TopSection } from "./components/top-section";
-import { FilterSection } from "./components/filter-section";
-import { CommentSection } from "./components/comment-section";
-import { CommentViewModel } from "./components/view-models/CommentViewModel";
-import { HeaderSection } from "./components/header-section";
+import Link from "next/link";
+import { usePostStore } from "../core/store/store";
+import { PostApplication } from "../core/application/PostApplication";
+import { container } from "../core/infrastructure/di/container";
+import { TopSection } from "../components/top-section";
+import { FilterSection } from "../components/filter-section";
+import { CommentSection } from "../components/comment-section";
+import { CommentViewModel } from "../components/view-models/CommentViewModel";
+import { HeaderSection } from "../components/header-section";
 
 const MOCK_COMMENTS: CommentViewModel[] = [
   {
@@ -61,6 +62,7 @@ export default function Home() {
   const router = useRouter();
   const { posts, setPosts } = usePostStore();
   const postApp = container.resolve(PostApplication);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const fetchPosts = async () => {
     try {
@@ -72,8 +74,21 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // 세션 체크 로직 등
-    // if not session -> router.push('/auth')
+    // 여기에서 로그인 상태를 확인
+    // 예시 코드: 실제 로직은 구현 방식에 따라 다를 수 있음
+    const checkLoginStatus = () => {
+      // 예: localStorage 또는 쿠키에서 토큰 확인
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+        // 자동 리다이렉트를 원한다면 아래 코드를 주석 해제
+        router.push('/login');
+      }
+    };
+    
+    checkLoginStatus();
     fetchPosts();
   }, []);
 
@@ -108,12 +123,25 @@ export default function Home() {
         </div>
         <div className="mt-8">
           <h1 className="text-2xl font-bold mb-4">메인 페이지</h1>
-          <button
-            onClick={handleCreatePost}
-            className="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600"
-          >
-            새 게시물
-          </button>
+          
+          {isLoggedIn ? (
+            <button
+              onClick={handleCreatePost}
+              className="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600"
+            >
+              새 게시물
+            </button>
+          ) : (
+            <div className="flex flex-col gap-4 mb-6">
+              <p className="text-gray-600">게시물을 작성하려면 로그인이 필요합니다.</p>
+              <Link 
+                href="/login" 
+                className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-6 py-2 rounded-lg font-medium hover:from-purple-600 hover:to-blue-600 transition-colors"
+              >
+                로그인 페이지로 이동
+              </Link>
+            </div>
+          )}
 
           <div className="space-y-4">
             {posts.map((post) => (
@@ -122,20 +150,22 @@ export default function Home() {
                 <small className="text-gray-500">
                   {post.createdAt.toISOString()}
                 </small>
-                <div className="mt-2 space-x-2">
-                  <button
-                    onClick={() => handleUpdatePost(post.id)}
-                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                  >
-                    수정
-                  </button>
-                  <button
-                    onClick={() => handleDeletePost(post.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  >
-                    삭제
-                  </button>
-                </div>
+                {isLoggedIn && (
+                  <div className="mt-2 space-x-2">
+                    <button
+                      onClick={() => handleUpdatePost(post.id)}
+                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                    >
+                      수정
+                    </button>
+                    <button
+                      onClick={() => handleDeletePost(post.id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    >
+                      삭제
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
