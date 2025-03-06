@@ -1,6 +1,5 @@
 "use client";
 import "reflect-metadata";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

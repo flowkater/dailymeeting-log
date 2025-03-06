@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageCircle, ThumbsUp, MoreHorizontal } from "lucide-react";
 import {
   CommentViewModel,
-  toCommentViewModel,
 } from "./view-models/CommentViewModel";
 
 interface CommentSectionProps {
